@@ -9,8 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        orbitron: ['var(--font-orbitron)'],
+        montserrat: ['var(--font-montserrat)'],
         rajdhani: ['var(--font-rajdhani)'],
+        orbitron: ['var(--font-orbitron)'],
+        kanit: ['var(--font-kanit)'],
+        syncopate: ['var(--font-syncopate)'],
       },
     },
   },

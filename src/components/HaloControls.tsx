@@ -19,13 +19,14 @@ export interface HaloMotion {
   motionScale: number;
   blurIntensity: number;
   opacityMultiplier: number;
+  scale: number;
 }
 
 export interface HaloSettings {
   preset: HaloPreset;
   customColors: HaloColors;
   motion: HaloMotion;
-  isDarkMode: boolean;
+  invertColors: boolean;
 }
 
 interface HaloControlsProps {
@@ -82,6 +83,7 @@ export function HaloControls({
   --halo-motion-scale: ${settings.motion.motionScale};
   --halo-blur-intensity: ${settings.motion.blurIntensity};
   --halo-opacity-multiplier: ${settings.motion.opacityMultiplier};
+  --halo-scale: ${settings.motion.scale};
 
   /* Custom Colors */
   --halo-color-primary: ${settings.customColors.primary};
@@ -136,7 +138,7 @@ export function HaloControls({
         <div className="flex flex-wrap gap-4">
           {/* Primary */}
           <div className="inline-flex flex-col gap-1">
-            <Label htmlFor="color-primary" className="text-xs">
+            <Label htmlFor="color-primary" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Primary
             </Label>
             <div className="flex gap-1.5">
@@ -158,7 +160,7 @@ export function HaloControls({
 
           {/* Secondary */}
           <div className="inline-flex flex-col gap-1">
-            <Label htmlFor="color-secondary" className="text-xs">
+            <Label htmlFor="color-secondary" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Secondary
             </Label>
             <div className="flex gap-1.5">
@@ -184,7 +186,7 @@ export function HaloControls({
 
           {/* Accent */}
           <div className="inline-flex flex-col gap-1">
-            <Label htmlFor="color-accent" className="text-xs">
+            <Label htmlFor="color-accent" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Accent
             </Label>
             <div className="flex gap-1.5">
@@ -206,7 +208,7 @@ export function HaloControls({
 
           {/* Edge */}
           <div className="inline-flex flex-col gap-1">
-            <Label htmlFor="color-edge" className="text-xs">
+            <Label htmlFor="color-edge" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Edge
             </Label>
             <div className="flex gap-1.5">
@@ -235,10 +237,10 @@ export function HaloControls({
         {/* Speed Multiplier */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="speed-slider" className="text-xs">
+            <Label htmlFor="speed-slider" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Speed
             </Label>
-            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+            <span className="font-montserrat text-xs text-black/60 dark:text-neutral-400">
               {settings.motion.speedMultiplier.toFixed(2)}x
             </span>
           </div>
@@ -256,10 +258,10 @@ export function HaloControls({
         {/* Motion Scale */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="motion-scale-slider" className="text-xs">
+            <Label htmlFor="motion-scale-slider" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Motion Scale
             </Label>
-            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+            <span className="font-montserrat text-xs text-black/60 dark:text-neutral-400">
               {settings.motion.motionScale.toFixed(1)}
             </span>
           </div>
@@ -275,10 +277,10 @@ export function HaloControls({
         {/* Blur Intensity */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="blur-slider" className="text-xs">
+            <Label htmlFor="blur-slider" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Blur Intensity
             </Label>
-            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+            <span className="font-montserrat text-xs text-black/60 dark:text-neutral-400">
               {settings.motion.blurIntensity.toFixed(1)}
             </span>
           </div>
@@ -296,10 +298,10 @@ export function HaloControls({
         {/* Opacity Multiplier */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="opacity-slider" className="text-xs">
+            <Label htmlFor="opacity-slider" className="font-montserrat text-xs text-black/80 dark:text-white/80">
               Opacity
             </Label>
-            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+            <span className="font-montserrat text-xs text-black/60 dark:text-neutral-400">
               {settings.motion.opacityMultiplier.toFixed(1)}
             </span>
           </div>
@@ -310,6 +312,25 @@ export function HaloControls({
             }
             min={0.3}
             max={1.5}
+            step={0.1}
+          />
+        </div>
+
+        {/* Scale/Zoom */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="scale-slider" className="font-montserrat text-xs text-black/80 dark:text-white/80">
+              Size
+            </Label>
+            <span className="font-montserrat text-xs text-black/60 dark:text-neutral-400">
+              {(settings.motion.scale ?? 0.7).toFixed(1)}x
+            </span>
+          </div>
+          <Slider
+            value={settings.motion.scale ?? 0.7}
+            onValueChange={(value) => handleMotionChange('scale', value)}
+            min={0.3}
+            max={2}
             step={0.1}
           />
         </div>

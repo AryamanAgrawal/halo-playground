@@ -35,9 +35,9 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
           value={value}
           onChange={(e) => onValueChange(parseFloat(e.target.value))}
           disabled={disabled}
-          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-700"
+          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-black/10 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-700"
           style={{
-            background: `linear-gradient(to right, rgb(38 38 38) 0%, rgb(38 38 38) ${((value - min) / (max - min)) * 100}%, rgb(229 229 229) ${((value - min) / (max - min)) * 100}%, rgb(229 229 229) 100%)`,
+            background: `linear-gradient(to right, rgb(0 0 0) 0%, rgb(0 0 0) ${((value - min) / (max - min)) * 100}%, rgba(0, 0, 0, 0.1) ${((value - min) / (max - min)) * 100}%, rgba(0, 0, 0, 0.1) 100%)`,
           }}
         />
         <style jsx>{`
@@ -46,30 +46,30 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: rgb(38 38 38);
+            background: rgb(0 0 0);
             cursor: pointer;
             border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
           }
 
           input[type='range']::-moz-range-thumb {
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: rgb(38 38 38);
+            background: rgb(0 0 0);
             cursor: pointer;
             border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
           }
 
           .dark input[type='range']::-webkit-slider-thumb {
             background: white;
-            border: 2px solid rgb(38 38 38);
+            border: 2px solid rgb(0 0 0);
           }
 
           .dark input[type='range']::-moz-range-thumb {
             background: white;
-            border: 2px solid rgb(38 38 38);
+            border: 2px solid rgb(0 0 0);
           }
         `}</style>
       </div>

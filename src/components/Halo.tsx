@@ -43,36 +43,16 @@ interface HaloProps {
   preset?: HaloPreset;
   variant?: 'fixed' | 'absolute';
   customColors?: HaloColors | null;
+  invertColors?: boolean;
 }
 
 export function Halo({
   preset = 'center',
   variant = 'fixed',
+  invertColors = false,
   customColors = null,
 }: HaloProps) {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
-
-  useEffect(() => {
-    const isDark = document.documentElement.classList.contains('dark');
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMode(isDark ? 'dark' : 'light');
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          const isDark = document.documentElement.classList.contains('dark');
-          setMode(isDark ? 'dark' : 'light');
-        }
-      });
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const mode = invertColors ? 'dark' : 'light';
 
   const customGradients = customColors
     ? generateHaloGradients(customColors, mode)

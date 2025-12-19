@@ -25,13 +25,14 @@ const DEFAULT_MOTION: HaloMotion = {
   motionScale: 1,
   blurIntensity: 1,
   opacityMultiplier: 1,
+  scale: 0.7,
 };
 
 const DEFAULT_SETTINGS: HaloSettings = {
   preset: 'bottom-left',
   customColors: DEFAULT_COLORS,
   motion: DEFAULT_MOTION,
-  isDarkMode: false,
+  invertColors: false,
 };
 
 // Encode settings to URL params
@@ -43,10 +44,11 @@ function encodeSettings(settings: HaloSettings): string {
   params.set('accent', settings.customColors.accent);
   params.set('edge', settings.customColors.edge);
   params.set('speed', settings.motion.speedMultiplier.toString());
-  params.set('scale', settings.motion.motionScale.toString());
+  params.set('motionScale', settings.motion.motionScale.toString());
   params.set('blur', settings.motion.blurIntensity.toString());
   params.set('opacity', settings.motion.opacityMultiplier.toString());
-  params.set('dark', settings.isDarkMode.toString());
+  params.set('size', settings.motion.scale.toString());
+  params.set('invert', settings.invertColors.toString());
   return params.toString();
 }
 
@@ -70,7 +72,7 @@ function decodeSettings(
         searchParams.get('speed') || DEFAULT_MOTION.speedMultiplier.toString(),
       ),
       motionScale: parseFloat(
-        searchParams.get('scale') || DEFAULT_MOTION.motionScale.toString(),
+        searchParams.get('motionScale') || DEFAULT_MOTION.motionScale.toString(),
       ),
       blurIntensity: parseFloat(
         searchParams.get('blur') || DEFAULT_MOTION.blurIntensity.toString(),
@@ -79,8 +81,11 @@ function decodeSettings(
         searchParams.get('opacity') ||
           DEFAULT_MOTION.opacityMultiplier.toString(),
       ),
+      scale: parseFloat(
+        searchParams.get('size') || DEFAULT_MOTION.scale.toString(),
+      ),
     },
-    isDarkMode: searchParams.get('dark') === 'true',
+    invertColors: searchParams.get('invert') === 'true',
   };
 }
 
@@ -93,15 +98,6 @@ export default function Home() {
     const urlSettings = decodeSettings(searchParams);
     return urlSettings || DEFAULT_SETTINGS;
   });
-
-  // Apply theme to document
-  useEffect(() => {
-    if (settings.isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [settings.isDarkMode]);
 
   // Apply motion CSS variables to document
   useEffect(() => {
@@ -121,6 +117,10 @@ export default function Home() {
     root.style.setProperty(
       '--halo-opacity-multiplier',
       settings.motion.opacityMultiplier.toString(),
+    );
+    root.style.setProperty(
+      '--halo-scale',
+      settings.motion.scale.toString(),
     );
   }, [settings.motion]);
 
@@ -148,40 +148,36 @@ export default function Home() {
 
   return (
     <main className="relative flex min-h-screen">
-      <Halo preset={settings.preset} customColors={settings.customColors} />
+      <Halo
+        preset={settings.preset}
+        customColors={settings.customColors}
+        invertColors={settings.invertColors}
+      />
 
       {/* Main Content Area */}
-      <div className="relative z-10 flex flex-1 items-center justify-center p-8">
-        <div className="text-center">
-          <div className="glass inline-block rounded-2xl px-8 py-6">
-            <h1 className="font-orbitron text-7xl font-black uppercase tracking-wider text-neutral-900 dark:text-white">
-              Halo
-            </h1>
-            <p className="mt-3 font-orbitron text-2xl font-medium tracking-wide text-neutral-600 dark:text-neutral-300">
-              Playground
-            </p>
-          </div>
-          <p className="glass mt-6 inline-block rounded-lg px-6 py-3 font-rajdhani text-lg font-medium tracking-wide text-neutral-700 dark:text-neutral-300">
-            Interactive animated background component
-          </p>
+      <div className="font-syncopate relative z-10 flex flex-1 items-center justify-center p-8">
+        <div className="font-syncopate text-center">
+          <h1 className="font-syncopate text-9xl font-bold uppercase tracking-[0.2em] text-white/70">
+            Halo
+          </h1>
         </div>
       </div>
 
       {/* Right Sidebar */}
-      <aside className="glass relative z-10 flex h-screen w-[420px] flex-col overflow-y-auto border-l border-neutral-200/30 dark:border-white/10">
-        <div className="sticky top-0 z-20 border-b border-neutral-200/30 bg-white/80 p-6 backdrop-blur-xl dark:border-white/10 dark:bg-black/40">
+      <aside className="relative z-10 flex h-screen w-[420px] flex-col overflow-y-auto border-l border-white/10 bg-black/40 backdrop-blur-xl">
+        <div className="sticky top-0 z-20 border-b border-white/10 bg-black/40 p-6 backdrop-blur-xl">
           <div className="flex items-center justify-between">
-            <h2 className="font-orbitron text-xl font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+            <h2 className="font-montserrat text-lg font-semibold uppercase tracking-wider text-white">
               Controls
             </h2>
             <div className="flex items-center gap-2">
-              <span className="font-rajdhani text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                {settings.isDarkMode ? 'Dark' : 'Light'}
+              <span className="font-montserrat text-sm font-normal text-neutral-400">
+                Invert Colors
               </span>
               <Switch
-                checked={settings.isDarkMode}
+                checked={settings.invertColors}
                 onCheckedChange={(checked) =>
-                  setSettings({ ...settings, isDarkMode: checked })
+                  setSettings({ ...settings, invertColors: checked })
                 }
               />
             </div>
