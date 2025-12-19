@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   generateHaloGradients,
   type HaloColors,
-} from '@/lib/theme/generateHaloGradients';
+} from '@/lib/generateHaloGradients';
 
 export type { HaloColors };
 
