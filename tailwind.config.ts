@@ -7,7 +7,12 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        orbitron: ['var(--font-orbitron)'],
+        rajdhani: ['var(--font-rajdhani)'],
+      },
+    },
   },
   plugins: [],
 };

@@ -5,8 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Halo } from '@/components/Halo';
 import { HaloControls } from '@/components/HaloControls';
-import { CodeViewer } from '@/components/CodeViewer';
 import { Button } from '@/components/ui/Button';
+import { Switch } from '@/components/ui/Switch';
 import type {
   HaloSettings,
   HaloColors,
@@ -147,38 +147,66 @@ export default function Home() {
   };
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center gap-8 p-8">
+    <main className="relative flex min-h-screen">
       <Halo preset={settings.preset} customColors={settings.customColors} />
 
-      <div className="relative z-10 flex flex-col items-center gap-8">
+      {/* Main Content Area */}
+      <div className="relative z-10 flex flex-1 items-center justify-center p-8">
         <div className="text-center">
-          <h1 className="text-6xl font-bold text-neutral-900 dark:text-white">
-            Halo Playground
-          </h1>
-          <p className="mt-2 text-xl text-neutral-600 dark:text-neutral-400">
+          <div className="glass inline-block rounded-2xl px-8 py-6">
+            <h1 className="font-orbitron text-7xl font-black uppercase tracking-wider text-neutral-900 dark:text-white">
+              Halo
+            </h1>
+            <p className="mt-3 font-orbitron text-2xl font-medium tracking-wide text-neutral-600 dark:text-neutral-300">
+              Playground
+            </p>
+          </div>
+          <p className="glass mt-6 inline-block rounded-lg px-6 py-3 font-rajdhani text-lg font-medium tracking-wide text-neutral-700 dark:text-neutral-300">
             Interactive animated background component
           </p>
         </div>
+      </div>
 
-        <HaloControls
-          settings={settings}
-          onSettingsChange={setSettings}
-          onReset={handleReset}
-        />
-
-        <div className="flex w-full max-w-2xl gap-2">
-          <Button onClick={handleShare} className="flex-1">
-            Share Configuration
-          </Button>
-          <Link href="/gallery" className="flex-1">
-            <Button variant="outline" className="w-full">
-              View Gallery
-            </Button>
-          </Link>
+      {/* Right Sidebar */}
+      <aside className="glass relative z-10 flex h-screen w-[420px] flex-col overflow-y-auto border-l border-neutral-200/30 dark:border-white/10">
+        <div className="sticky top-0 z-20 border-b border-neutral-200/30 bg-white/80 p-6 backdrop-blur-xl dark:border-white/10 dark:bg-black/40">
+          <div className="flex items-center justify-between">
+            <h2 className="font-orbitron text-xl font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+              Controls
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="font-rajdhani text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                {settings.isDarkMode ? 'Dark' : 'Light'}
+              </span>
+              <Switch
+                checked={settings.isDarkMode}
+                onCheckedChange={(checked) =>
+                  setSettings({ ...settings, isDarkMode: checked })
+                }
+              />
+            </div>
+          </div>
         </div>
 
-        <CodeViewer settings={settings} />
-      </div>
+        <div className="flex-1 space-y-6 p-6">
+          <HaloControls
+            settings={settings}
+            onSettingsChange={setSettings}
+            onReset={handleReset}
+          />
+
+          <div className="space-y-2">
+            <Button onClick={handleShare} className="w-full">
+              Share Configuration
+            </Button>
+            <Link href="/gallery" className="block w-full">
+              <Button variant="outline" className="w-full">
+                View Gallery
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </aside>
     </main>
   );
 }

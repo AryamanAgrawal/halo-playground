@@ -4,7 +4,6 @@ import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { Label } from './ui/Label';
 import { Select } from './ui/Select';
-import { Switch } from './ui/Switch';
 import { Slider } from './ui/Slider';
 import type { HaloPreset } from './Halo';
 
@@ -65,10 +64,6 @@ export function HaloControls({
     });
   };
 
-  const handleThemeToggle = (isDarkMode: boolean) => {
-    onSettingsChange({ ...settings, isDarkMode });
-  };
-
   const handleMotionChange = (key: keyof HaloMotion, value: number) => {
     onSettingsChange({
       ...settings,
@@ -107,19 +102,15 @@ export function HaloControls({
   };
 
   return (
-    <div className="glass relative z-10 w-full max-w-2xl space-y-6 rounded-2xl border border-neutral-200/30 p-6 dark:border-white/10">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-          Halo Controls
-        </h2>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportCSS}>
-            Export CSS
-          </Button>
-          <Button variant="outline" onClick={onReset}>
-            Reset
-          </Button>
-        </div>
+    <div className="space-y-6">
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <Button variant="outline" onClick={handleExportCSS} className="flex-1">
+          Export CSS
+        </Button>
+        <Button variant="outline" onClick={onReset} className="flex-1">
+          Reset
+        </Button>
       </div>
 
       {/* Preset Selector */}
@@ -137,15 +128,6 @@ export function HaloControls({
             </option>
           ))}
         </Select>
-      </div>
-
-      {/* Theme Toggle */}
-      <div className="flex items-center justify-between">
-        <Label>Dark Mode</Label>
-        <Switch
-          checked={settings.isDarkMode}
-          onCheckedChange={handleThemeToggle}
-        />
       </div>
 
       {/* Color Pickers */}
