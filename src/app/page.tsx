@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Halo } from '@/components/Halo';
 import { HaloControls } from '@/components/HaloControls';
+import { CodeViewer } from '@/components/CodeViewer';
 import { Button } from '@/components/ui/Button';
 import type {
   HaloSettings,
@@ -164,9 +166,18 @@ export default function Home() {
           onReset={handleReset}
         />
 
-        <Button onClick={handleShare} className="w-full max-w-2xl">
-          Share Configuration
-        </Button>
+        <div className="flex w-full max-w-2xl gap-2">
+          <Button onClick={handleShare} className="flex-1">
+            Share Configuration
+          </Button>
+          <Link href="/gallery" className="flex-1">
+            <Button variant="outline" className="w-full">
+              View Gallery
+            </Button>
+          </Link>
+        </div>
+
+        <CodeViewer settings={settings} />
       </div>
     </main>
   );
