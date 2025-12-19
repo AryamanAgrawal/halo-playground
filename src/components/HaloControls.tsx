@@ -5,6 +5,7 @@ import { Input } from './ui/Input';
 import { Label } from './ui/Label';
 import { Select } from './ui/Select';
 import { Switch } from './ui/Switch';
+import { Slider } from './ui/Slider';
 import type { HaloPreset } from './Halo';
 
 export interface HaloColors {
@@ -14,9 +15,17 @@ export interface HaloColors {
   edge: string;
 }
 
+export interface HaloMotion {
+  speedMultiplier: number;
+  motionScale: number;
+  blurIntensity: number;
+  opacityMultiplier: number;
+}
+
 export interface HaloSettings {
   preset: HaloPreset;
   customColors: HaloColors;
+  motion: HaloMotion;
   isDarkMode: boolean;
 }
 
@@ -58,6 +67,19 @@ export function HaloControls({
 
   const handleThemeToggle = (isDarkMode: boolean) => {
     onSettingsChange({ ...settings, isDarkMode });
+  };
+
+  const handleMotionChange = (
+    key: keyof HaloMotion,
+    value: number,
+  ) => {
+    onSettingsChange({
+      ...settings,
+      motion: {
+        ...settings.motion,
+        [key]: value,
+      },
+    });
   };
 
   return (
@@ -192,6 +214,93 @@ export function HaloControls({
               />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Motion Controls */}
+      <div className="space-y-4">
+        <Label>Motion Controls</Label>
+
+        {/* Speed Multiplier */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="speed-slider" className="text-xs">
+              Speed
+            </Label>
+            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+              {settings.motion.speedMultiplier.toFixed(2)}x
+            </span>
+          </div>
+          <Slider
+            value={settings.motion.speedMultiplier}
+            onValueChange={(value) =>
+              handleMotionChange('speedMultiplier', value)
+            }
+            min={0.1}
+            max={2}
+            step={0.1}
+          />
+        </div>
+
+        {/* Motion Scale */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="motion-scale-slider" className="text-xs">
+              Motion Scale
+            </Label>
+            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+              {settings.motion.motionScale.toFixed(1)}
+            </span>
+          </div>
+          <Slider
+            value={settings.motion.motionScale}
+            onValueChange={(value) => handleMotionChange('motionScale', value)}
+            min={0}
+            max={2}
+            step={0.1}
+          />
+        </div>
+
+        {/* Blur Intensity */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="blur-slider" className="text-xs">
+              Blur Intensity
+            </Label>
+            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+              {settings.motion.blurIntensity.toFixed(1)}
+            </span>
+          </div>
+          <Slider
+            value={settings.motion.blurIntensity}
+            onValueChange={(value) =>
+              handleMotionChange('blurIntensity', value)
+            }
+            min={0.5}
+            max={2}
+            step={0.1}
+          />
+        </div>
+
+        {/* Opacity Multiplier */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="opacity-slider" className="text-xs">
+              Opacity
+            </Label>
+            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+              {settings.motion.opacityMultiplier.toFixed(1)}
+            </span>
+          </div>
+          <Slider
+            value={settings.motion.opacityMultiplier}
+            onValueChange={(value) =>
+              handleMotionChange('opacityMultiplier', value)
+            }
+            min={0.3}
+            max={1.5}
+            step={0.1}
+          />
         </div>
       </div>
     </div>
