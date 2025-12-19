@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Halo } from '@/components/Halo';
 import { HaloControls } from '@/components/HaloControls';
+import { Button } from '@/components/ui/Button';
 import type {
   HaloSettings,
   HaloColors,
@@ -30,8 +32,65 @@ const DEFAULT_SETTINGS: HaloSettings = {
   isDarkMode: false,
 };
 
+// Encode settings to URL params
+function encodeSettings(settings: HaloSettings): string {
+  const params = new URLSearchParams();
+  params.set('preset', settings.preset);
+  params.set('primary', settings.customColors.primary);
+  params.set('secondary', settings.customColors.secondary);
+  params.set('accent', settings.customColors.accent);
+  params.set('edge', settings.customColors.edge);
+  params.set('speed', settings.motion.speedMultiplier.toString());
+  params.set('scale', settings.motion.motionScale.toString());
+  params.set('blur', settings.motion.blurIntensity.toString());
+  params.set('opacity', settings.motion.opacityMultiplier.toString());
+  params.set('dark', settings.isDarkMode.toString());
+  return params.toString();
+}
+
+// Decode settings from URL params
+function decodeSettings(
+  searchParams: URLSearchParams,
+): HaloSettings | null {
+  const preset = searchParams.get('preset');
+  if (!preset) return null;
+
+  return {
+    preset: preset as any,
+    customColors: {
+      primary: searchParams.get('primary') || DEFAULT_COLORS.primary,
+      secondary: searchParams.get('secondary') || DEFAULT_COLORS.secondary,
+      accent: searchParams.get('accent') || DEFAULT_COLORS.accent,
+      edge: searchParams.get('edge') || DEFAULT_COLORS.edge,
+    },
+    motion: {
+      speedMultiplier: parseFloat(
+        searchParams.get('speed') || DEFAULT_MOTION.speedMultiplier.toString(),
+      ),
+      motionScale: parseFloat(
+        searchParams.get('scale') || DEFAULT_MOTION.motionScale.toString(),
+      ),
+      blurIntensity: parseFloat(
+        searchParams.get('blur') || DEFAULT_MOTION.blurIntensity.toString(),
+      ),
+      opacityMultiplier: parseFloat(
+        searchParams.get('opacity') ||
+          DEFAULT_MOTION.opacityMultiplier.toString(),
+      ),
+    },
+    isDarkMode: searchParams.get('dark') === 'true',
+  };
+}
+
 export default function Home() {
-  const [settings, setSettings] = useState<HaloSettings>(DEFAULT_SETTINGS);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Initialize settings from URL params or defaults
+  const [settings, setSettings] = useState<HaloSettings>(() => {
+    const urlSettings = decodeSettings(searchParams);
+    return urlSettings || DEFAULT_SETTINGS;
+  });
 
   // Apply theme to document
   useEffect(() => {
@@ -63,8 +122,26 @@ export default function Home() {
     );
   }, [settings.motion]);
 
+  // Update URL when settings change
+  useEffect(() => {
+    const params = encodeSettings(settings);
+    router.replace(`?${params}`, { scroll: false });
+  }, [settings, router]);
+
   const handleReset = () => {
     setSettings(DEFAULT_SETTINGS);
+  };
+
+  const handleShare = async () => {
+    const params = encodeSettings(settings);
+    const url = `${window.location.origin}${window.location.pathname}?${params}`;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      alert('Share link copied to clipboard!');
+    } catch (err) {
+      alert('Failed to copy share link');
+    }
   };
 
   return (
@@ -86,6 +163,10 @@ export default function Home() {
           onSettingsChange={setSettings}
           onReset={handleReset}
         />
+
+        <Button onClick={handleShare} className="w-full max-w-2xl">
+          Share Configuration
+        </Button>
       </div>
     </main>
   );

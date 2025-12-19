@@ -69,10 +69,7 @@ export function HaloControls({
     onSettingsChange({ ...settings, isDarkMode });
   };
 
-  const handleMotionChange = (
-    key: keyof HaloMotion,
-    value: number,
-  ) => {
+  const handleMotionChange = (key: keyof HaloMotion, value: number) => {
     onSettingsChange({
       ...settings,
       motion: {
@@ -82,15 +79,47 @@ export function HaloControls({
     });
   };
 
+  const handleExportCSS = async () => {
+    const css = `/* Halo Animation CSS */
+:root {
+  /* Motion Controls */
+  --halo-speed-multiplier: ${settings.motion.speedMultiplier};
+  --halo-motion-scale: ${settings.motion.motionScale};
+  --halo-blur-intensity: ${settings.motion.blurIntensity};
+  --halo-opacity-multiplier: ${settings.motion.opacityMultiplier};
+
+  /* Custom Colors */
+  --halo-color-primary: ${settings.customColors.primary};
+  --halo-color-secondary: ${settings.customColors.secondary};
+  --halo-color-accent: ${settings.customColors.accent};
+  --halo-color-edge: ${settings.customColors.edge};
+
+  /* Preset */
+  --halo-preset: ${settings.preset};
+}`;
+
+    try {
+      await navigator.clipboard.writeText(css);
+      alert('CSS copied to clipboard!');
+    } catch (err) {
+      alert('Failed to copy CSS to clipboard');
+    }
+  };
+
   return (
     <div className="glass relative z-10 w-full max-w-2xl space-y-6 rounded-2xl border border-neutral-200/30 p-6 dark:border-white/10">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
           Halo Controls
         </h2>
-        <Button variant="outline" onClick={onReset}>
-          Reset
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportCSS}>
+            Export CSS
+          </Button>
+          <Button variant="outline" onClick={onReset}>
+            Reset
+          </Button>
+        </div>
       </div>
 
       {/* Preset Selector */}
