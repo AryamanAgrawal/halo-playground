@@ -2,6 +2,8 @@
 
 Interactive playground for experimenting with the Halo animated background component. Create stunning aurora-like gradient animations with full customization controls.
 
+<img width="2560" height="1317" alt="Screenshot 2025-12-19 at 3 55 46 PM" src="https://github.com/user-attachments/assets/78871323-83e7-41d7-864b-e865f0f0a83e" />
+
 ## Features
 
 - 🎨 **8 Preset Positions** - Center, top/bottom corners, edges, and chat-glow
