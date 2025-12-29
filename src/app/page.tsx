@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Halo } from '@/components/Halo';
 import { HaloControls } from '@/components/HaloControls';
+import { MillenniumFalcon } from '@/components/MillenniumFalcon';
+import { FalconControls } from '@/components/FalconControls';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Switch';
 import type {
@@ -12,6 +14,7 @@ import type {
   HaloColors,
   HaloMotion,
 } from '@/components/HaloControls';
+import type { FalconSettings } from '@/components/MillenniumFalcon';
 
 const DEFAULT_COLORS: HaloColors = {
   primary: '#06b6d4',
@@ -32,7 +35,28 @@ const DEFAULT_SETTINGS: HaloSettings = {
   preset: 'bottom-left',
   customColors: DEFAULT_COLORS,
   motion: DEFAULT_MOTION,
-  invertColors: false,
+  invertColors: true, // true = dark mode gradients
+};
+
+const DEFAULT_FALCON_SETTINGS: FalconSettings = {
+  enabled: false,
+  positionX: 0,
+  positionY: 0,
+  positionZ: 0,
+  rotationX: 0,
+  rotationY: 0,
+  rotationZ: 0,
+  scale: 0.15,
+  autoRotate: true,
+  autoRotateSpeed: 0.01,
+  color: '#bbbbbb',
+  useGradient: true,
+  gradientColor1: '#06b6d4',
+  gradientColor2: '#14b8a6',
+  gradientColor3: '#f5d69c',
+  gradientColor4: '#e8dcc8',
+  flowSpeed: 0.3,
+  noiseScale: 0.3,
 };
 
 // Encode settings to URL params
@@ -99,6 +123,12 @@ export default function Home() {
     return urlSettings || DEFAULT_SETTINGS;
   });
 
+  // Falcon settings state
+  const [falconSettings, setFalconSettings] = useState<FalconSettings>(DEFAULT_FALCON_SETTINGS);
+
+  // Sidebar collapse state
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   // Apply motion CSS variables to document
   useEffect(() => {
     const root = document.documentElement;
@@ -123,6 +153,16 @@ export default function Home() {
       settings.motion.scale.toString(),
     );
   }, [settings.motion]);
+
+  // Toggle dark/light mode class on html element
+  useEffect(() => {
+    const root = document.documentElement;
+    if (settings.invertColors) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [settings.invertColors]);
 
   // Update URL when settings change
   useEffect(() => {
@@ -154,32 +194,63 @@ export default function Home() {
         invertColors={settings.invertColors}
       />
 
+      {/* Millennium Falcon 3D Model */}
+      <MillenniumFalcon settings={falconSettings} />
+
       {/* Main Content Area */}
       <div className="font-syncopate relative z-10 flex flex-1 items-center justify-center p-8">
         <div className="font-syncopate text-center">
-          <h1 className="font-syncopate text-9xl font-bold uppercase tracking-[0.2em] text-white/70">
+          <h1 className="font-syncopate text-9xl font-bold uppercase tracking-[0.2em] text-black/50 dark:text-white/70">
             Halo
           </h1>
         </div>
       </div>
 
+      {/* Sidebar Toggle Button (when collapsed) */}
+      {sidebarCollapsed && (
+        <button
+          onClick={() => setSidebarCollapsed(false)}
+          className="fixed right-6 top-6 z-20 flex h-10 w-10 items-center justify-center rounded-lg border border-black/10 bg-white/50 backdrop-blur-xl transition-all hover:bg-white/70 dark:border-white/10 dark:bg-black/60 dark:hover:bg-black/80"
+          aria-label="Open sidebar"
+        >
+          <svg className="h-5 w-5 text-black dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      )}
+
       {/* Right Sidebar */}
-      <aside className="relative z-10 flex h-screen w-[420px] flex-col overflow-y-auto border-l border-white/10 bg-black/40 backdrop-blur-xl">
-        <div className="sticky top-0 z-20 border-b border-white/10 bg-black/40 p-6 backdrop-blur-xl">
+      <aside
+        className={`relative z-10 flex h-screen flex-col overflow-y-auto border-l border-black/10 bg-white/50 backdrop-blur-xl transition-all duration-300 dark:border-white/10 dark:bg-black/60 ${
+          sidebarCollapsed ? 'w-0 overflow-hidden border-l-0' : 'w-[420px]'
+        }`}
+      >
+        <div className="sticky top-0 z-20 border-b border-black/10 bg-white/50 p-6 backdrop-blur-xl dark:border-white/10 dark:bg-black/60">
           <div className="flex items-center justify-between">
-            <h2 className="font-montserrat text-lg font-semibold uppercase tracking-wider text-white">
+            <h2 className="font-montserrat text-lg font-semibold uppercase tracking-wider text-black dark:text-white">
               Controls
             </h2>
-            <div className="flex items-center gap-2">
-              <span className="font-montserrat text-sm font-normal text-neutral-400">
-                Invert Colors
-              </span>
-              <Switch
-                checked={settings.invertColors}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, invertColors: checked })
-                }
-              />
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="font-montserrat text-sm font-normal text-neutral-500 dark:text-neutral-400">
+                  {settings.invertColors ? 'Dark' : 'Light'}
+                </span>
+                <Switch
+                  checked={settings.invertColors}
+                  onCheckedChange={(checked) =>
+                    setSettings({ ...settings, invertColors: checked })
+                  }
+                />
+              </div>
+              <button
+                onClick={() => setSidebarCollapsed(true)}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-black/5 hover:text-black dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-white"
+                aria-label="Close sidebar"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -190,6 +261,15 @@ export default function Home() {
             onSettingsChange={setSettings}
             onReset={handleReset}
           />
+
+          {/* Millennium Falcon Controls */}
+          <div className="border-t border-black/10 pt-6 dark:border-white/10">
+            <FalconControls
+              settings={falconSettings}
+              onSettingsChange={setFalconSettings}
+              haloSettings={settings}
+            />
+          </div>
 
           <div className="space-y-2">
             <Button onClick={handleShare} className="w-full">

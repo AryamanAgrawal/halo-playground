@@ -145,14 +145,14 @@ export function Halo({
 
         @keyframes falconer-rotate {
           0% {
-            transform: rotate(0deg) scale(1);
+            transform: rotate(0deg) scale(1) translateZ(0);
           }
           50% {
             transform: rotate(180deg)
-              scale(calc(1 + 0.08 * var(--halo-motion-scale)));
+              scale(calc(1 + 0.08 * var(--halo-motion-scale))) translateZ(0);
           }
           100% {
-            transform: rotate(360deg) scale(1);
+            transform: rotate(360deg) scale(1) translateZ(0);
           }
         }
 
@@ -175,26 +175,29 @@ export function Halo({
         @keyframes falconer-drift {
           0%,
           100% {
-            transform: translate(0, 0) rotate(0deg);
+            transform: translate3d(0, 0, 0) rotate(0deg);
           }
           25% {
-            transform: translate(
+            transform: translate3d(
                 calc(8% * var(--halo-motion-scale)),
-                calc(-5% * var(--halo-motion-scale))
+                calc(-5% * var(--halo-motion-scale)),
+                0
               )
               rotate(90deg);
           }
           50% {
-            transform: translate(
+            transform: translate3d(
                 calc(-5% * var(--halo-motion-scale)),
-                calc(8% * var(--halo-motion-scale))
+                calc(8% * var(--halo-motion-scale)),
+                0
               )
               rotate(180deg);
           }
           75% {
-            transform: translate(
+            transform: translate3d(
                 calc(-8% * var(--halo-motion-scale)),
-                calc(-3% * var(--halo-motion-scale))
+                calc(-3% * var(--halo-motion-scale)),
+                0
               )
               rotate(270deg);
           }
@@ -383,6 +386,8 @@ export function Halo({
           inset: 0;
           border-radius: 50%;
           mix-blend-mode: var(--halo-blend-mode);
+          will-change: transform, opacity, filter;
+          transform: translateZ(0);
         }
 
         .halo-primary {
@@ -408,7 +413,7 @@ export function Halo({
           opacity: calc(
             var(--halo-secondary-opacity) * var(--halo-opacity-multiplier)
           );
-          transform: scale(0.9);
+          transform: scale(0.9) translateZ(0);
           filter: blur(calc(100px * var(--halo-blur-intensity)));
         }
 
@@ -423,7 +428,7 @@ export function Halo({
             var(--halo-tertiary-opacity) * var(--halo-opacity-multiplier)
           );
           filter: blur(calc(60px * var(--halo-blur-intensity)));
-          transform: scale(0.5) translate(20%, 20%);
+          transform: scale(0.5) translate3d(20%, 20%, 0);
         }
 
         .halo-core {
@@ -434,7 +439,7 @@ export function Halo({
             var(--halo-core-opacity) * var(--halo-opacity-multiplier)
           );
           filter: blur(calc(40px * var(--halo-blur-intensity)));
-          transform: scale(0.4);
+          transform: scale(0.4) translateZ(0);
         }
 
         .halo-glow {
@@ -447,6 +452,8 @@ export function Halo({
           filter: blur(calc(120px * var(--halo-blur-intensity)));
           animation: falconer-pulse calc(7s / var(--halo-speed-multiplier))
             ease-in-out infinite;
+          will-change: opacity, filter;
+          transform: translateZ(0);
         }
 
         @media (prefers-reduced-motion: reduce) {
